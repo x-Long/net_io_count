@@ -87,13 +87,13 @@ class Main_window(QtWidgets.QWidget, Ui_Dialog):
     def mousePressEvent(self, event):
         if event.button() == Qt.Qt.LeftButton:
             self.m_flag = True
-            self.m_Position = event.globalPos() - self.pos()  # 获取鼠标相对窗口的位置
+            self.m_Position = event.globalPos() - self.pos()  
             event.accept()
-            self.setCursor(QCursor(Qt.Qt.OpenHandCursor))  # 更改鼠标图标
+            self.setCursor(QCursor(Qt.Qt.OpenHandCursor)) 
 
     def mouseMoveEvent(self, QMouseEvent):
         if Qt.Qt.LeftButton and self.m_flag:
-            self.move(QMouseEvent.globalPos() - self.m_Position)  # 更改窗口位置
+            self.move(QMouseEvent.globalPos() - self.m_Position) 
             QMouseEvent.accept()
 
     def mouseReleaseEvent(self, QMouseEvent):
