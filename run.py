@@ -2,6 +2,8 @@ import psutil
 from PyQt5 import QtWidgets, Qt, QtCore, QtGui
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QApplication
+
 from net_io_count_ui import Ui_Dialog
 import sys
 import time
@@ -105,7 +107,14 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     main_window = Main_window()
     main_window.setWindowFlags(Qt.Qt.FramelessWindowHint | Qt.Qt.WindowStaysOnTopHint | Qt.Qt.Tool)
+    desktop = QApplication.desktop()
+    main_window.move(desktop.width() * 0.85, desktop.height() * 0.85)
     main_window.show()
+
     ti = TrayIcon(main_window)
+    icon = QtGui.QIcon(r"logo.png")
+    ti.setIcon(icon)
+    ti.setToolTip("流量监测工具")
     ti.show()
+
     sys.exit(app.exec_())
