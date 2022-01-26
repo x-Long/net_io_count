@@ -15,11 +15,13 @@ python run.py
 
 
 ## 2、客户端打包 
+> 没有python环境的同学可以点击此处直接下载：[net_io_count](https://github.com/x-Long/net_io_count/releases/download/net_count_io/net_io_count.zip)
 ```shell script
-# 打包方式兼容windows 与 linux
 
 pip install pyinstaller
 pyinstaller -Dw run.py
+# 打包方式兼容windows 与 linux
+# 如果自己打包出来体积过大，建议直接使用上方下载链接的release版本（对体积进行过专门优化）
 ```
 
 ## 3、Windows设置开机自启
