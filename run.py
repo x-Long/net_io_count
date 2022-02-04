@@ -1,32 +1,10 @@
-import psutil
+import sys
+
 from PyQt5 import QtWidgets, Qt, QtCore, QtGui
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QApplication
 
 from net_io_count_ui import Ui_Dialog
-import sys
-import time
-
-
-class NetCountThread(QtCore.QThread):
-    _signal = pyqtSignal(str, str)
-
-    def __init__(self, parent=None):
-        super(NetCountThread, self).__init__(parent)
-
-    def speed_test(self):
-        s1 = psutil.net_io_counters(pernic=True)['WLAN']
-        time.sleep(1)
-        s2 = psutil.net_io_counters(pernic=True)['WLAN']
-        upload = s2.bytes_sent - s1.bytes_sent
-        download = s2.bytes_recv - s1.bytes_recv
-        return str('↑%.2f' % (upload / 1024)) + 'KB/s', str('↓%.2f' % (download / 1024)) + 'KB/s'
-
-    def run(self):
-        while True:
-            up, down = self.speed_test()
-            self._signal.emit(up, down)
+from utils import NetCountThread
 
 
 class TrayIcon(QtWidgets.QSystemTrayIcon):
@@ -44,25 +22,21 @@ class TrayIcon(QtWidgets.QSystemTrayIcon):
         self.menu.addAction(self.showAction)
         self.menu.addAction(self.quitAction)
         self.setContextMenu(self.menu)
-        # 设置图标
-        # self.setIcon(QtGui.QIcon("/path/icon"))
-        # 把鼠标点击图标的信号和槽连接
         self.activated.connect(self.onIconClicked)
 
     def show_window(self):
-        # 若是最小化，则先正常显示窗口，再变为活动窗口（暂时显示在最前面）
         self.ui.showNormal()
         self.ui.activateWindow()
 
     def quit(self):
         QtWidgets.qApp.quit()
 
-    # 鼠标点击icon传递的信号会带有一个整形的值，1是表示单击右键，2是双击，3是单击左键，4是用鼠标中键点击
     def onIconClicked(self, reason):
+        """
+        :param reason: 鼠标点击icon传递的信号会带有一个整形的值，1是表示单击右键，2是双击，3是单击左键，4是用鼠标中键点击
+        """
         if reason == 2 or reason == 3:
-            # self.showMessage("Message", "skr at here", self.icon)
             if self.ui.isMinimized() or not self.ui.isVisible():
-                # 若是最小化，则先正常显示窗口，再变为活动窗口（暂时显示在最前面）
                 self.ui.showNormal()
                 self.ui.activateWindow()
                 self.ui.show()
@@ -72,14 +46,14 @@ class TrayIcon(QtWidgets.QSystemTrayIcon):
                 self.ui.show()
 
 
-class Main_window(QtWidgets.QWidget, Ui_Dialog):
+class MainWindow(QtWidgets.QWidget, Ui_Dialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
 
-        self.thread = NetCountThread()
-        self.thread._signal.connect(self.changge_net_io_value)
-        self.thread.start()
+        self.net_count_thread = NetCountThread()
+        self.net_count_thread.net_count_signal.connect(self.changge_net_io_value)
+        self.net_count_thread.start()
         self.setWindowFlags(QtCore.Qt.Tool)
 
     def changge_net_io_value(self, up, down):
@@ -89,23 +63,23 @@ class Main_window(QtWidgets.QWidget, Ui_Dialog):
     def mousePressEvent(self, event):
         if event.button() == Qt.Qt.LeftButton:
             self.m_flag = True
-            self.m_Position = event.globalPos() - self.pos()  
+            self.m_Position = event.globalPos() - self.pos()
             event.accept()
-            self.setCursor(QCursor(Qt.Qt.OpenHandCursor)) 
+            self.setCursor(QtGui.QCursor(Qt.Qt.OpenHandCursor))
 
     def mouseMoveEvent(self, QMouseEvent):
         if Qt.Qt.LeftButton and self.m_flag:
-            self.move(QMouseEvent.globalPos() - self.m_Position) 
+            self.move(QMouseEvent.globalPos() - self.m_Position)
             QMouseEvent.accept()
 
     def mouseReleaseEvent(self, QMouseEvent):
         self.m_flag = False
-        self.setCursor(QCursor(Qt.Qt.ArrowCursor))
+        self.setCursor(QtGui.QCursor(Qt.Qt.ArrowCursor))
 
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    main_window = Main_window()
+    main_window = MainWindow()
     main_window.setWindowFlags(Qt.Qt.FramelessWindowHint | Qt.Qt.WindowStaysOnTopHint | Qt.Qt.Tool)
     desktop = QApplication.desktop()
     main_window.move(desktop.width() * 0.85, desktop.height() * 0.85)
