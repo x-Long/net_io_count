@@ -4,7 +4,7 @@
 > **Motivation**: 一般的杀软类似360，火绒都会携带类似的小插件，非常美观易用，但是为了一个小插件专门去下载杀软没有必要，由此自己动手写一个并设为开机启动，非常方便。
 
 ## 1. 运行示例
-<img src="./example/example.png" style="width:500px">
+<img src="./readme_img/example.png" style="width:500px">
 
 
 ## 1、终端运行
