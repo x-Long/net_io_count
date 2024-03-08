@@ -57,6 +57,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Dialog):
         self.setWindowFlags(QtCore.Qt.Tool)
 
     def changge_net_io_value(self, up, down):
+        self.setWindowFlags(Qt.Qt.FramelessWindowHint | Qt.Qt.WindowStaysOnTopHint | Qt.Qt.Tool)
         self.label.setText(up)
         self.label_down.setText(down)
 
