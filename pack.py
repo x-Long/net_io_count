@@ -1,9 +1,11 @@
 import os
+import re
 
 import create_pyd
 
 
 def shell_run(cmd):
+    print(cmd)
     with os.popen(cmd) as fp:
         bf = fp._stream.buffer.read()
     try:
@@ -13,14 +15,12 @@ def shell_run(cmd):
 
 
 def create_spec(cmd):
-    print(shell_run(cmd))
+    shell_run(cmd)
 
 
 def change_spec():
     with open('流量监测.spec', 'r', encoding='utf-8') as file:
         content = file.read()
-
-    old_text = """pyz = PYZ(a.pure, a.zipped_data,"""
 
     new_text = """
 #**********************************************************************
@@ -34,10 +34,14 @@ print(un_embed_exe)
 
 a.pure = [x for x in a.pure if project_name not in x[1]]
 #**********************************************************************
-pyz = PYZ(a.pure, a.zipped_data,
-    """.strip()
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+"""
 
-    new_content = content.replace(old_text, new_text)
+    pattern = re.compile(
+        r"pyz = PYZ\(a\.pure, a\.zipped_data,.*?cipher=block_cipher\)", re.DOTALL
+    )
+    # 使用sub函数替换匹配到的内容
+    new_content = re.sub(pattern, new_text, content)
 
     with open('流量监测.spec', 'w', encoding='utf-8') as file:
         file.write(new_content)
@@ -50,7 +54,7 @@ def run_spec(cmd):
 
 
 if __name__ == '__main__':
-    # 关键字符串
+    # 关键字符串 正式项目中应设为全局变量
     # 项目文件名 net_io_count
     # 入口文件名：流量监测
     # 代码目录：project
@@ -83,4 +87,4 @@ pyinstaller 流量监测.spec
     run_spec(cmd)
 
     # step 5
-    os.remove("流量监测.spec")
+    # os.remove("流量监测.spec")
