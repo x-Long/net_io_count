@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5 import QtWidgets, Qt, QtCore, QtGui
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMenu, QAction
 
 from project.net_io_count_ui import Ui_Dialog
 from project.util.utils import NetCountThread
@@ -51,10 +51,24 @@ class MainWindow(QtWidgets.QWidget, Ui_Dialog):
         super().__init__(parent)
         self.setupUi(self)
 
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.showContextMenu)
+
         self.net_count_thread = NetCountThread()
         self.net_count_thread.net_count_signal.connect(self.changge_net_io_value)
         self.net_count_thread.start()
         self.setWindowFlags(QtCore.Qt.Tool)
+
+    def showContextMenu(self, pos):
+        menu = QMenu()
+        menu.addAction(QAction('退出', self))
+        action = menu.exec_(self.mapToGlobal(pos))
+
+        if not action:
+            return
+
+        if action.text() == '退出':
+            exit()
 
     def changge_net_io_value(self, up, down):
         self.setWindowFlags(Qt.Qt.FramelessWindowHint | Qt.Qt.WindowStaysOnTopHint | Qt.Qt.Tool)
