@@ -28,6 +28,10 @@ def get_net_card() -> dict:
     return info
 
 
+class GlobalVariables:
+    card_name = get_net_card()["net_card_name"]
+
+
 class NetCardThread(threading.Thread):
 
     def __init__(self):
@@ -50,7 +54,7 @@ class NetCountThread(QtCore.QThread):
         self.net_card_thread.start()
 
     def net_io_count(self):
-        net_card_name = self.net_card_thread.net_card_name
+        net_card_name = GlobalVariables.card_name
         if not net_card_name:
             return '↑0.00KB/s', '↓0.00KB/s',
         s1 = psutil.net_io_counters(pernic=True)[net_card_name]

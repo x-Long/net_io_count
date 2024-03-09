@@ -1,10 +1,12 @@
 import sys
 
+import psutil
 from PyQt5 import QtWidgets, Qt, QtCore, QtGui
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMenu, QAction
 
 from project.net_io_count_ui import Ui_Dialog
-from project.util.utils import NetCountThread
+from project.util.utils import NetCountThread, GlobalVariables
 
 
 class TrayIcon(QtWidgets.QSystemTrayIcon):
@@ -58,17 +60,28 @@ class MainWindow(QtWidgets.QWidget, Ui_Dialog):
         self.net_count_thread.net_count_signal.connect(self.changge_net_io_value)
         self.net_count_thread.start()
         self.setWindowFlags(QtCore.Qt.Tool)
+        self.m_flag = False
 
     def showContextMenu(self, pos):
         menu = QMenu()
-        menu.addAction(QAction('退出', self))
+
+        for card_name in psutil.net_io_counters(pernic=True):
+            if card_name == GlobalVariables.card_name:
+                menu.addAction(QAction(QIcon(r".\project\asset\网卡.png"), card_name, self))
+            else:
+                menu.addAction(QAction(card_name, self))
+
+        menu.addAction(QAction(QIcon(r".\project\asset\退出.png"), "退出", self))
+
         action = menu.exec_(self.mapToGlobal(pos))
 
         if not action:
             return
 
+        GlobalVariables.card_name = action.text()
+
         if action.text() == '退出':
-            exit()
+            sys.exit()
 
     def changge_net_io_value(self, up, down):
         self.setWindowFlags(Qt.Qt.FramelessWindowHint | Qt.Qt.WindowStaysOnTopHint | Qt.Qt.Tool)
