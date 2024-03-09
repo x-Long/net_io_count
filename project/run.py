@@ -71,6 +71,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Dialog):
             else:
                 menu.addAction(QAction(card_name, self))
 
+        menu.addSeparator()
         menu.addAction(QAction(QIcon(r".\project\asset\退出.png"), "退出", self))
 
         action = menu.exec_(self.mapToGlobal(pos))
