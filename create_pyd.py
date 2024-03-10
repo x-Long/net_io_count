@@ -32,7 +32,6 @@ def compile_pyd(py_filepath, pyd_filepath):
     else:
         print(f"need compile {py_filepath} -> {pyd_filepath}")
 
-        # os.popen(f"easycython --no-annotation {py_filepath}").read()
         process = subprocess.Popen(
             f"E:\developTool\Python\Python38\Scripts\easycython.exe --no-annotation {py_filepath}",
             stdout=subprocess.PIPE,
