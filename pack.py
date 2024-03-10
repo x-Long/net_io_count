@@ -1,5 +1,4 @@
 import os
-import re
 
 import create_pyd
 
@@ -34,14 +33,18 @@ print(un_embed_exe)
 
 a.pure = [x for x in a.pure if project_name not in x[1]]
 #**********************************************************************
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure)
 """
 
-    pattern = re.compile(
-        r"pyz = PYZ\(a\.pure, a\.zipped_data,.*?cipher=block_cipher\)", re.DOTALL
-    )
-    # 使用sub函数替换匹配到的内容
-    new_content = re.sub(pattern, new_text, content)
+    # pyinstaller 4.10
+    # pattern = re.compile(
+    #     r"pyz = PYZ\(a\.pure, a\.zipped_data,.*?cipher=block_cipher\)", re.DOTALL
+    # )
+    # # 使用sub函数替换匹配到的内容
+    # new_content = re.sub(pattern, new_text, content)
+
+    # # pyinstaller 6.5.0
+    new_content = content.replace("pyz = PYZ(a.pure)", new_text)
 
     with open('流量监测.spec', 'w', encoding='utf-8') as file:
         file.write(new_content)
@@ -66,7 +69,8 @@ if __name__ == '__main__':
     # step 2
     cmd = """
 
-pyi-makespec -D -w 流量监测.py 
+E:\developTool\Python\Python38\Scripts\pyi-makespec.exe -D -w 流量监测.py 
+--contents-directory bin
 --icon=".\\project\\asset\\logo.ico"
 --add-data ".\\project\\asset\\*;.\\project\\asset" 
 --add-data ".\\pyd_cache\\;.\\project"
@@ -80,7 +84,7 @@ pyi-makespec -D -w 流量监测.py
     # step 4
     cmd = """
     
-pyinstaller 流量监测.spec 
+E:\developTool\Python\Python38\Scripts\pyinstaller.exe 流量监测.spec 
 --distpath=./bundle/dist --workpath=./bundle/build -y
 
 """.replace("\n", " ")

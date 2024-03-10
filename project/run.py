@@ -1,3 +1,4 @@
+import os
 import sys
 
 import psutil
@@ -6,6 +7,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMenu, QAction
 
 from project.net_io_count_ui import Ui_Dialog
+from project.path_manager import PathManager
 from project.util.utils import NetCountThread, GlobalVariables
 
 
@@ -67,12 +69,12 @@ class MainWindow(QtWidgets.QWidget, Ui_Dialog):
 
         for card_name in psutil.net_io_counters(pernic=True):
             if card_name == GlobalVariables.card_name:
-                menu.addAction(QAction(QIcon(r".\project\asset\网卡.png"), card_name, self))
+                menu.addAction(QAction(QIcon(os.path.join(PathManager.icon_dir, "网卡.png")), card_name, self))
             else:
                 menu.addAction(QAction(card_name, self))
 
         menu.addSeparator()
-        menu.addAction(QAction(QIcon(r".\project\asset\退出.png"), "退出", self))
+        menu.addAction(QAction(QIcon(os.path.join(PathManager.icon_dir, "退出.png")), "退出", self))
 
         action = menu.exec_(self.mapToGlobal(pos))
 
@@ -115,7 +117,7 @@ def main():
     main_window.show()
 
     ti = TrayIcon(main_window)
-    icon = QtGui.QIcon(r".\project\asset\logo.png")
+    icon = QtGui.QIcon(os.path.join(PathManager.icon_dir, "logo.png"))
     ti.setIcon(icon)
     ti.setToolTip("流量监测工具")
     ti.show()

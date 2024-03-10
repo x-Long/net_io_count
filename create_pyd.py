@@ -32,9 +32,9 @@ def compile_pyd(py_filepath, pyd_filepath):
     else:
         print(f"need compile {py_filepath} -> {pyd_filepath}")
 
-        os.popen(f"easycython --no-annotation {py_filepath}").read()
+        # os.popen(f"easycython --no-annotation {py_filepath}").read()
         process = subprocess.Popen(
-            f"easycython --no-annotation {py_filepath}",
+            f"E:\developTool\Python\Python38\Scripts\easycython.exe --no-annotation {py_filepath}",
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             # shell==True 接收字符串,shell==False 接收数组
@@ -49,7 +49,7 @@ def compile_pyd(py_filepath, pyd_filepath):
 
         shutil.rmtree("build")
         os.remove(filepath_exclude_ext + ".c")
-        os.rename(filepath_exclude_ext + ".cp36-win_amd64.pyd", filepath_exclude_ext + ".pyd")
+        os.rename(filepath_exclude_ext + ".cp38-win_amd64.pyd", filepath_exclude_ext + ".pyd")
         shutil.move(filepath_exclude_ext + ".pyd", pyd_filepath)
 
     os.chdir(os.path.dirname(__file__))
