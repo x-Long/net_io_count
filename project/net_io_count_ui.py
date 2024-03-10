@@ -1,6 +1,5 @@
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -43,4 +42,3 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(_translate("Dialog", "xlong 流量统计"))
         self.label.setText(_translate("Dialog", "↑0.00KB/s"))
         self.label_down.setText(_translate("Dialog", "↓0.00KB/s"))
-
