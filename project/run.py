@@ -4,7 +4,7 @@ import sys
 import psutil
 from PyQt5 import QtWidgets, Qt, QtCore, QtGui
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QMenu, QAction
+from PyQt5.QtWidgets import QMenu, QAction, QDesktopWidget
 
 from project.net_io_count_ui import Ui_Dialog
 from project.path_manager import PathManager
@@ -112,8 +112,11 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     main_window = MainWindow()
     main_window.setWindowFlags(Qt.Qt.FramelessWindowHint | Qt.Qt.WindowStaysOnTopHint | Qt.Qt.Tool)
-    desktop = QApplication.desktop()
-    main_window.move(desktop.width() * 0.85, desktop.height() * 0.85)
+
+    screen_geometry = QDesktopWidget().screenGeometry(0)
+    screen_width = screen_geometry.width()
+    screen_height = screen_geometry.height()
+    main_window.move(screen_width * 0.85, screen_height * 0.85)
     main_window.show()
 
     ti = TrayIcon(main_window)
