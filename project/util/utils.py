@@ -1,26 +1,40 @@
 import socket
 import threading
 import time
+from contextlib import closing
 
 import psutil
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal
 
 
-def get_ip() -> str:
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    ip = (s.getsockname()[0])
-    s.close()
-    return ip
+def get_local_ip() -> str:
+    try:
+        with closing(socket.socket(socket.AF_INET, socket.SOCK_DGRAM)) as s:
+            s.connect(("8.8.8.8", 80))
+            return s.getsockname()[0]
+    except (OSError, socket.gaierror) as e:
+        print(e)
+        return ""
+"""
+subnet 172.168.1.0 netmask 255.255.255.0 {
+  range 172.168.1.10 172.168.1.233;
+  option routers 172.168.1.1;
+  option domain-name-servers 114.114.114.114;
+  option broadcast-address 172.168.1.255;
+  default-lease-time 600;
+  max-lease-time 7200;
+}
 
+
+"""
 
 def get_net_card() -> dict:
     name = ip = ''
     info = psutil.net_if_addrs()
     for k, v in info.items():
         for item in range(0, len(v)):
-            if v[item][0] == 2 and get_ip() in v[item][1]:
+            if v[item][0] == 2 and get_local_ip() in v[item][1]:
                 name = k
                 ip = v[item][1]
                 break
@@ -68,3 +82,8 @@ class NetCountThread(QtCore.QThread):
         while True:
             up, down = self.net_io_count()
             self.net_count_signal.emit(up, down)
+
+
+if __name__ == '__main__':
+    print(get_local_ip())
+    print(get_net_card())
