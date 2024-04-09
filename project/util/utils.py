@@ -16,18 +16,7 @@ def get_local_ip() -> str:
     except (OSError, socket.gaierror) as e:
         print(e)
         return ""
-"""
-subnet 172.168.1.0 netmask 255.255.255.0 {
-  range 172.168.1.10 172.168.1.233;
-  option routers 172.168.1.1;
-  option domain-name-servers 114.114.114.114;
-  option broadcast-address 172.168.1.255;
-  default-lease-time 600;
-  max-lease-time 7200;
-}
 
-
-"""
 
 def get_net_card() -> dict:
     name = ip = ''
