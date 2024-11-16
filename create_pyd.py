@@ -83,26 +83,19 @@ def clean_pyd(pyd_list):
 
 def main():
     project_dir = r".\project"
-    project_dir = os.path.abspath(project_dir)
+    pyd_dir = r"./pyd_cache"
 
-    # get all python filenames
-    py_files = []
+    project_dir = os.path.abspath(project_dir)
+    pyd_dir = os.path.abspath(pyd_dir)
+
+    pyd_map = {}
     for root, dirs, files in os.walk(project_dir):
         for file in files:
             if file.endswith('.py'):
-                py_files.append(os.path.join(root, file))
-
-    # get all pyd filenames
-    pyd_files = []
-    for py_file in py_files:
-        dir_name = os.path.dirname(py_file).replace("project", "pyd_cache")
-        if not os.path.exists(dir_name):
-            os.mkdir(dir_name)
-        filename_exclude_ext = os.path.splitext(os.path.basename(py_file))[0]
-        pyd_filename = filename_exclude_ext + ".pyd"
-        pyd_files.append(os.path.join(dir_name, pyd_filename))
-
-    pyd_map = dict(zip(py_files, pyd_files))
+                py = os.path.join(root, file)
+                pyd = (py + "d").replace(project_dir, pyd_dir)
+                os.makedirs(os.path.dirname(pyd), exist_ok=True)
+                pyd_map[py] = pyd
 
     use_cache = []
     for py, pyd in pyd_map.items():
