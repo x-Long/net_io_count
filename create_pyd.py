@@ -82,7 +82,7 @@ def clean_pyd(pyd_list):
 
 
 def main():
-    project_dir = r".\project"
+    project_dir = r"./project"
     pyd_dir = r"./pyd_cache"
 
     project_dir = os.path.abspath(project_dir)
